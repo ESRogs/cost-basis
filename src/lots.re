@@ -41,7 +41,7 @@ let rec recSell = (size, sellPrice, dateSold, lots, salesSoFar) => {
     | [] => InsufficientTaxLots
     | [first, ...rest] => {
       let (sale, size, leftoverLot) = makeSale(size, sellPrice, dateSold, first);
-      let sales = [sale, ...salesSoFar];
+      let sales = salesSoFar @ [sale];
       let lots = switch(leftoverLot) {
       | None => rest
       | Some(leftoverLot) => [leftoverLot, ...rest]

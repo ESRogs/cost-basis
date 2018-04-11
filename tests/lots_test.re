@@ -4,13 +4,18 @@ open Lots;
 let product = "XYZ";
 let sellPrice = 1000.;
 let dateSold = ISOString("2017-07-01");
-let tl = {
+let tl1 = {
   product,
-  size: 5.,
+  size: 1.,
   buyPrice: 1000.,
   dateAcquired: ISOString("2017-01-01"),
 };
-let lots = [tl];
+let tl2 = {
+  ...tl1,
+  size: 4.,
+  dateAcquired: ISOString("2017-01-02"),
+};
+let lots = [tl1, tl2];
 
 describe("match lots", () => {
   open Expect;
@@ -27,12 +32,17 @@ describe("match lots", () => {
 
   test("1.5 sold", () => {
     let size = 1.5;
-    let expectedSales = [{
-      taxLot: { ...tl, size: 1.5 },
+    let sale1 = {
+      taxLot: tl1,
       sellPrice,
       dateSold,
-    }];
-    let expectedLeftovers = [{ ...tl, size: 3.5 }];
+    };
+    let sale2 = {
+      ...sale1,
+      taxLot: { ...tl2, size: 0.5 },
+    };
+    let expectedSales = [sale1, sale2];
+    let expectedLeftovers = [{ ...tl2, size: 3.5 }];
     let expectedResult = Success(expectedSales, expectedLeftovers);
     expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(expectedResult)
   });
