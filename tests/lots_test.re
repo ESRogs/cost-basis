@@ -15,19 +15,25 @@ let lots = [tl];
 describe("match lots", () => {
   open Expect;
 
-  let size = -1.;
-  test("negative size", () => expect(sell(size, sellPrice, dateSold, lots)) |> toBe(InvalidSize));
+  test("negative size", () => {
+    let size = -1.;
+    expect(sell(size, sellPrice, dateSold, lots)) |> toBe(InvalidSize)
+  });
 
-  let size = 0.;
-  test("zero size", () => expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(Success([], lots)));
+  test("zero size", () => {
+    let size = 0.;
+    expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(Success([], lots))
+  });
 
-  let size = 1.5;
-  let expectedSales = [{
-    taxLot: { ...tl, size: 1.5 },
-    sellPrice,
-    dateSold,
-  }];
-  let expectedLeftovers = [{ ...tl, size: 3.5 }];
-  let expectedResult = Success(expectedSales, expectedLeftovers);
-  test("1.5 sold", () => expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(expectedResult));
+  test("1.5 sold", () => {
+    let size = 1.5;
+    let expectedSales = [{
+      taxLot: { ...tl, size: 1.5 },
+      sellPrice,
+      dateSold,
+    }];
+    let expectedLeftovers = [{ ...tl, size: 3.5 }];
+    let expectedResult = Success(expectedSales, expectedLeftovers);
+    expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(expectedResult)
+  });
 });
