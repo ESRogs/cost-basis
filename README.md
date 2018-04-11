@@ -2,12 +2,12 @@
 
 I've been meaning to do this since 2014. Replacing my spreadsheets with scripts.
 
-# Build
+### Build
 ```
 npm run build
 ```
 
-# Build + Watch
+### Build + Watch
 
 ```
 npm run start
