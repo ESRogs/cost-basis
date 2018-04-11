@@ -36,4 +36,9 @@ describe("match lots", () => {
     let expectedResult = Success(expectedSales, expectedLeftovers);
     expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(expectedResult)
   });
+
+  test("insufficient lots", () => {
+    let size = 9.;
+    expect(sell(size, sellPrice, dateSold, lots)) |> toEqual(InsufficientTaxLots)
+  });
 });
