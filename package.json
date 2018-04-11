@@ -4,7 +4,11 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world"
+    "clean": "bsb -clean-world",
+    "test": "jest"
+  },
+  "jest": {
+    "testRegex": "/lib/js/tests/.*$"
   },
   "keywords": [
     "BuckleScript"
@@ -12,6 +16,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
     "bs-platform": "^2.2.3"
   }
 }
