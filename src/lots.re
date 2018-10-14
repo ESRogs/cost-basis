@@ -33,10 +33,10 @@ let makeSale = (size: float, sellPrice: float, dateSold: timestamp, lot: taxLot)
 };
 
 let rec recSell = (size, sellPrice, dateSold, lots, salesSoFar) => {
-  if (size == 0.) {
-    Success(salesSoFar, lots)
-  } else if (size < 0.) {
+  if (size < 0. || (size == 0. && salesSoFar == [])) {
     InvalidSize
+  } else if (size == 0.) {
+    Success(salesSoFar, lots)
   } else switch (lots) {
     | [] => InsufficientTaxLots
     | [first, ...rest] => {
