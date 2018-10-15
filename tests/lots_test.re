@@ -26,6 +26,16 @@ let tl3 = {
 
 let lots = [tl1, tl2, tl3];
 
+exception Unpossible(string);
+
+let sellAndExpectSuccess = (size, sellPrice, dateSold, lots) => {
+  let result = sell(size, sellPrice, dateSold, lots);
+  switch (result) {
+  | Success(sales, lotsRemaining) => (sales, lotsRemaining)
+  | _ => raise(Unpossible("sale should succeed!"))
+  }
+};
+
 describe("match lots", () => {
   open Expect;
 
@@ -114,5 +124,44 @@ describe("match lots", () => {
     let result = sell(7.6, 1000., ISOString("2017-07-01"), lots);
     expect(result)
     |> toEqual(InsufficientTaxLots)
+  });
+
+  test("6.0 sold across three sales", () => {
+    let (sales1, lotsRemaining1) = sellAndExpectSuccess(2., 1000., ISOString("2017-07-01"), lots);
+    let (sales2, lotsRemaining2) = sellAndExpectSuccess(2., 1000., ISOString("2017-07-01"), lotsRemaining1);
+    let (sales3, lotsRemaining3) = sellAndExpectSuccess(2., 1000., ISOString("2017-07-01"), lotsRemaining2);
+    let sellPrice = 1000.;
+    let dateSold = ISOString("2017-07-01");
+
+    let expectedSales1 = [
+      { taxLot: tl1, sellPrice, dateSold },
+      { taxLot: { ...tl2, size: 1. }, sellPrice, dateSold },
+    ];
+    let expectedLotsRemaining1 = [
+      { ...tl2, size: 3. },
+      tl3,
+    ];
+
+    let expectedSales2 = [ { taxLot: { ...tl2, size: 2. }, sellPrice, dateSold } ];
+    let expectedLotsRemaining2 = [
+      { ...tl2, size: 1. },
+      tl3,
+    ];
+
+    let expectedSales3 = [
+      { taxLot: { ...tl2, size: 1. }, sellPrice, dateSold },
+      { taxLot: { ...tl3, size: 1. }, sellPrice, dateSold },
+    ];
+    let expectedLotsRemaining3 = [ { ...tl3, size: 1.5 } ];
+
+    expect([
+      (sales1, lotsRemaining1),
+      (sales2, lotsRemaining2),
+      (sales3, lotsRemaining3),
+    ]) |> toEqual([
+      (expectedSales1, expectedLotsRemaining1),
+      (expectedSales2, expectedLotsRemaining2),
+      (expectedSales3, expectedLotsRemaining3),
+    ])
   });
 });
